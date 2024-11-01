@@ -3,6 +3,7 @@ use crate::db::{
     self,
     models::Article,
     surrealdb::{self, ProcessedArticle},
+    Collection,
 };
 use anyhow::{Context, Result};
 use diesel::prelude::*;
@@ -18,51 +19,37 @@ pub async fn migrate_data() -> Result<()> {
     // Setup SurrealDB schema
     surrealdb::setup_schema().await?;
 
-    // Migrate articles
-    info!("Migrating articles...");
-    let articles = Article::load_all(&mut pg_conn)?;
+    // Migrate collections first
+    info!("Migrating collections...");
+    let collections = Collection::load_all(&mut pg_conn)?;
 
-    for article in articles {
-        let surreal_article = article.to_surreal_article()?;
+    for collection in collections {
+        let surreal_collection = collection.to_surreal_collection()?;
 
         let created: Option<surrealdb::Record> = surreal_db
-            .create(("articles", &surreal_article.id))
-            .content(surreal_article)
+            .create(("collections", &surreal_collection.id))
+            .content(surreal_collection)
             .await?;
 
-        info!("Migrated article {}, created: {:?}", article.id, created);
+        info!(
+            "Migrated collection {}, created: {:?}",
+            collection.id, created
+        );
     }
 
-    // Migrate vector embeddings and processed articles
-    // info!("Migrating processed articles and embeddings...");
-    // let processed_articles = sql_query(
-    //     "SELECT a.id as article_id, pa.* FROM processed_articles pa
-    //      JOIN articles a ON a.id = pa.article_id",
-    // )
-    // .load::<ProcessedArticle>(&mut pg_conn)?;
+    // Migrate articles
+    // info!("Migrating articles...");
+    // let articles = Article::load_all(&mut pg_conn)?;
 
-    // for proc_article in processed_articles {
-    //     let surreal_proc_article = surrealdb::ProcessedArticle {
-    //         article_id: proc_article.article_id.to_string(),
-    //         summary: proc_article.summary,
-    //         key_points: proc_article.key_points,
-    //         keywords: proc_article.keywords,
-    //         semantic_chunks: proc_article.semantic_chunks,
-    //         embeddings: proc_article.embeddings,
-    //         categories: proc_article.categories,
-    //     };
+    // for article in articles {
+    //     let surreal_article = article.to_surreal_article()?;
 
-    //     match surreal_db
-    //         .create(("processed_articles", &surreal_proc_article.article_id))
-    //         .content(surreal_proc_article)
-    //         .await
-    //     {
-    //         Ok(_) => info!("Migrated processed article {}", proc_article.article_id),
-    //         Err(e) => error!(
-    //             "Failed to migrate processed article {}: {}",
-    //             proc_article.article_id, e
-    //         ),
-    //     }
+    //     let created: Option<surrealdb::Record> = surreal_db
+    //         .create(("articles", &surreal_article.id))
+    //         .content(surreal_article)
+    //         .await?;
+
+    //     info!("Migrated article {}, created: {:?}", article.id, created);
     // }
 
     info!("Migration completed successfully");

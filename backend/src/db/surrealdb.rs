@@ -40,6 +40,32 @@ pub struct ProcessedArticle {
     pub categories: Vec<String>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Collection {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub slug: String,
+    pub helpscout_collection_id: String,
+    pub paragraph_description: Option<String>,
+    pub bullet_points: Option<String>,
+    pub keywords: Option<String>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NewCollection {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub slug: String,
+    pub helpscout_collection_id: String,
+    pub paragraph_description: Option<String>,
+    pub bullet_points: Option<String>,
+    pub keywords: Option<String>,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Record {
     id: RecordId,
@@ -69,6 +95,7 @@ pub async fn setup_schema() -> Result<(), SurrealError> {
 
     // Define table for articles
     db.query("DEFINE TABLE articles SCHEMAFULL").await?;
+    db.query("DEFINE TABLE collections SCHEMAFULL").await?;
 
     // Define fields for articles
     db.query(
@@ -104,6 +131,26 @@ pub async fn setup_schema() -> Result<(), SurrealError> {
         DEFINE FIELD created_at ON TABLE processed_articles TYPE datetime DEFAULT time::now();
         DEFINE FIELD updated_at ON TABLE processed_articles TYPE datetime DEFAULT time::now();
     "#,
+    )
+    .await?;
+
+    // Define fields for collections
+    db.query(
+        r#"
+      -- Define the collections table
+      DEFINE TABLE collections SCHEMAFULL;
+      
+      -- Define fields
+      DEFINE FIELD name ON TABLE collections TYPE string;
+      DEFINE FIELD description ON TABLE collections TYPE string;
+      DEFINE FIELD slug ON TABLE collections TYPE string;
+      DEFINE FIELD helpscout_collection_id ON TABLE collections TYPE string;
+      DEFINE FIELD paragraph_description ON TABLE collections TYPE option<string>;
+      DEFINE FIELD bullet_points ON TABLE collections TYPE option<string>;
+      DEFINE FIELD keywords ON TABLE collections TYPE option<string>;
+      DEFINE FIELD created_at ON TABLE collections TYPE datetime DEFAULT time::now();
+      DEFINE FIELD updated_at ON TABLE collections TYPE datetime DEFAULT time::now();
+  "#,
     )
     .await?;
 
