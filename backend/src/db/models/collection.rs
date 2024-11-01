@@ -4,7 +4,10 @@ use pgvector::Vector;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, Serialize, Deserialize, Queryable)]
+use crate::schema::collections;
+
+#[derive(Debug, Clone, Serialize, Deserialize, Queryable, Selectable, Insertable, Identifiable)]
+#[diesel(table_name = collections)]
 pub struct Collection {
     pub id: Uuid,
     pub name: String,
@@ -13,6 +16,7 @@ pub struct Collection {
     pub helpscout_collection_id: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    // Meta Data
     pub paragraph_description: Option<String>,
     pub bullet_points: Option<String>,
     pub keywords: Option<String>,

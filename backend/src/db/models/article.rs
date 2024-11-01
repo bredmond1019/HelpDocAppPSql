@@ -1,12 +1,17 @@
 use chrono::{DateTime, Utc};
+use diesel::associations::HasTable;
 use diesel::prelude::*;
+use diesel::BelongingToDsl;
 use pgvector::Vector;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::db::schema::articles;
+use crate::db::models::collection::Collection;
+use crate::schema::articles;
 
-#[derive(Debug, Serialize, Deserialize, Queryable)]
+#[derive(Debug, Clone, Serialize, Deserialize, Queryable, Selectable, Insertable, Associations)]
+#[diesel(table_name = crate::schema::articles)]
+#[diesel(belongs_to(Collection, foreign_key = collection_id))]
 pub struct Article {
     pub id: Uuid,
     pub collection_id: Uuid,
@@ -20,9 +25,10 @@ pub struct Article {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub helpscout_article_id: Option<String>,
+    // Meta Data
     pub paragraph_description: Option<String>,
-    pub bullet_points: Vec<String>,
-    pub keywords: Vec<String>,
+    pub bullet_points: Option<Vec<Option<String>>>,
+    pub keywords: Option<Vec<Option<String>>>,
     pub paragraph_description_embedding: Option<Vector>,
     pub bullet_points_embedding: Option<Vector>,
     pub keywords_embedding: Option<Vector>,
@@ -40,5 +46,13 @@ pub struct ArticleChunk {
 impl Article {
     pub fn load_all(conn: &mut PgConnection) -> Result<Vec<Article>, diesel::result::Error> {
         articles::table.load::<Article>(conn)
+    }
+}
+
+impl HasTable for Article {
+    type Table = articles::table;
+
+    fn table() -> Self::Table {
+        articles::table
     }
 }

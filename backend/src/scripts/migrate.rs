@@ -20,7 +20,7 @@ pub async fn migrate_data() -> Result<()> {
 
     // Migrate articles
     info!("Migrating articles...");
-    let articles = Article::load_all(&mut pg_conn).context("Failed to load articles")?;
+    let articles = Article::load_all(&mut pg_conn)?;
 
     for article in articles {
         let surreal_article = surrealdb::Article {

@@ -28,3 +28,29 @@
 2024-11-01 15:46:44 - INFO - shutting down idle worker
 2024-11-01 15:46:44 - INFO - shutting down idle worker
 2024-11-01 15:46:44 - INFO - shutting down idle worker
+2024-11-01 15:53:58 - INFO - Logger initialized successfully
+2024-11-01 15:53:58 - INFO - Starting application
+2024-11-01 15:53:58 - INFO - Server listening on 127.0.0.1:3000
+2024-11-01 15:53:58 - INFO - starting 10 workers
+2024-11-01 15:53:58 - INFO - Actix runtime found; starting in Actix runtime
+2024-11-01 15:53:58 - INFO - starting service: "actix-web-service-127.0.0.1:3000", workers: 10, listening on: 127.0.0.1:3000
+2024-11-01 15:54:04 - INFO - SIGINT received; starting forced shutdown
+2024-11-01 15:54:04 - INFO - shutting down idle worker
+2024-11-01 15:54:04 - INFO - shutting down idle worker
+2024-11-01 15:54:04 - INFO - shutting down idle worker
+2024-11-01 15:54:04 - INFO - shutting down idle worker
+2024-11-01 15:54:04 - INFO - shutting down idle worker
+2024-11-01 15:54:04 - INFO - shutting down idle worker
+2024-11-01 15:54:04 - INFO - shutting down idle worker
+2024-11-01 15:54:04 - INFO - shutting down idle worker
+2024-11-01 15:54:04 - INFO - shutting down idle worker
+2024-11-01 15:54:04 - INFO - accept thread stopped
+2024-11-01 15:54:04 - INFO - shutting down idle worker
+2024-11-01 15:57:24 - INFO - Logger initialized successfully
+2024-11-01 15:57:24 - INFO - Starting application
+2024-11-01 15:57:24 - INFO - Starting migration from PostgreSQL to SurrealDB
+2024-11-01 15:57:24 - INFO - Migrating articles...
+2024-11-01 15:58:12 - INFO - Logger initialized successfully
+2024-11-01 15:58:12 - INFO - Starting application
+2024-11-01 15:58:12 - INFO - Starting migration from PostgreSQL to SurrealDB
+2024-11-01 15:58:12 - INFO - Migrating articles...

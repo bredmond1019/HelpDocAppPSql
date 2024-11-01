@@ -12,6 +12,7 @@ use db::DbPool;
 
 pub mod db;
 pub mod routes;
+pub mod schema;
 pub mod scripts;
 pub mod services;
 
@@ -33,7 +34,9 @@ async fn main() -> std::io::Result<()> {
     let pool: DbPool = db::init_pool();
     let arc_pool = Arc::new(pool.clone());
 
-    // scripts::migrate::migrate_data().await.unwrap();
+    scripts::migrate::migrate_data()
+        .await
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
 
     // Start the server
     info!("Server listening on 127.0.0.1:3000");
