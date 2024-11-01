@@ -1,0 +1,4 @@
+backend/target
+**/.DS_Store
+helpdocs_backup.sql
+helpdocs_backup_cleaned.sql
