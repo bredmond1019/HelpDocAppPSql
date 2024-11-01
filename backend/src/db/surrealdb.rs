@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 // File: src/db/surrealdb.rs
 use serde::{Deserialize, Serialize};
 use std::env;
@@ -15,8 +16,17 @@ pub struct Article {
     pub content: String,
     pub slug: String,
     pub categories: Vec<String>,
-    pub created_at: String,
-    pub updated_at: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NewArticle {
+    pub id: String,
+    pub title: String,
+    pub content: String,
+    pub slug: String,
+    pub categories: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -63,13 +73,17 @@ pub async fn setup_schema() -> Result<(), SurrealError> {
     // Define fields for articles
     db.query(
         r#"
-        DEFINE FIELD title ON TABLE articles TYPE string;
-        DEFINE FIELD content ON TABLE articles TYPE string;
-        DEFINE FIELD slug ON TABLE articles TYPE string;
-        DEFINE FIELD categories ON TABLE articles TYPE array;
-        DEFINE FIELD created_at ON TABLE articles TYPE datetime;
-        DEFINE FIELD updated_at ON TABLE articles TYPE datetime;
-    "#,
+      -- Define the articles table
+      DEFINE TABLE articles SCHEMAFULL;
+      
+      -- Define fields
+      DEFINE FIELD title ON TABLE articles TYPE string;
+      DEFINE FIELD content ON TABLE articles TYPE string;
+      DEFINE FIELD slug ON TABLE articles TYPE string;
+      DEFINE FIELD categories ON TABLE articles TYPE array;
+      DEFINE FIELD created_at ON TABLE articles TYPE datetime DEFAULT time::now();
+      DEFINE FIELD updated_at ON TABLE articles TYPE datetime DEFAULT time::now();
+  "#,
     )
     .await?;
 
@@ -87,6 +101,8 @@ pub async fn setup_schema() -> Result<(), SurrealError> {
         DEFINE FIELD semantic_chunks ON TABLE processed_articles TYPE array;
         DEFINE FIELD embeddings ON TABLE processed_articles TYPE array;
         DEFINE FIELD categories ON TABLE processed_articles TYPE array;
+        DEFINE FIELD created_at ON TABLE processed_articles TYPE datetime DEFAULT time::now();
+        DEFINE FIELD updated_at ON TABLE processed_articles TYPE datetime DEFAULT time::now();
     "#,
     )
     .await?;

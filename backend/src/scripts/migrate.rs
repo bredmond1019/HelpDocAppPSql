@@ -23,15 +23,7 @@ pub async fn migrate_data() -> Result<()> {
     let articles = Article::load_all(&mut pg_conn)?;
 
     for article in articles {
-        let surreal_article = surrealdb::Article {
-            id: article.id.to_string(),
-            title: article.title,
-            content: article.markdown_content.unwrap_or(String::new()),
-            slug: article.slug,
-            categories: vec![],
-            created_at: article.created_at.to_rfc3339(),
-            updated_at: article.updated_at.to_rfc3339(),
-        };
+        let surreal_article = article.to_surreal_article()?;
 
         let created: Option<surrealdb::Record> = surreal_db
             .create(("articles", &surreal_article.id))

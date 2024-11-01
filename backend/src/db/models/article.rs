@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 use diesel::associations::HasTable;
 use diesel::prelude::*;
 use diesel::BelongingToDsl;
@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::db::models::collection::Collection;
+use crate::db::surrealdb;
 use crate::schema::articles;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Queryable, Selectable, Insertable, Associations)]
@@ -46,6 +47,16 @@ pub struct ArticleChunk {
 impl Article {
     pub fn load_all(conn: &mut PgConnection) -> Result<Vec<Article>, diesel::result::Error> {
         articles::table.load::<Article>(conn)
+    }
+
+    pub fn to_surreal_article(&self) -> Result<surrealdb::NewArticle, anyhow::Error> {
+        Ok(surrealdb::NewArticle {
+            id: self.id.to_string(),
+            title: self.title.clone(),
+            content: self.markdown_content.clone().unwrap_or_default(),
+            slug: self.slug.clone(),
+            categories: vec![],
+        })
     }
 }
 

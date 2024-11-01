@@ -7,7 +7,6 @@ use diesel::RunQueryDsl;
 use diesel::{sql_query, PgConnection};
 
 pub mod models;
-pub mod schema;
 pub mod surrealdb;
 
 pub use self::models::*;
