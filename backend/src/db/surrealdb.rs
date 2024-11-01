@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::env;
 use surrealdb::engine::remote::ws::{Client, Ws};
 use surrealdb::opt::auth::Root;
-use surrealdb::{Error as SurrealError, Surreal};
+use surrealdb::{Error as SurrealError, RecordId, Surreal};
 use tokio::sync::OnceCell;
 
 static DB: OnceCell<Surreal<Client>> = OnceCell::const_new();
@@ -28,6 +28,11 @@ pub struct ProcessedArticle {
     pub semantic_chunks: Vec<String>,
     pub embeddings: Vec<f32>,
     pub categories: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Record {
+    id: RecordId,
 }
 
 pub async fn init_surrealdb() -> Result<&'static Surreal<Client>, SurrealError> {

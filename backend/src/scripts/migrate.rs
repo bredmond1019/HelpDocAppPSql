@@ -33,19 +33,12 @@ pub async fn migrate_data() -> Result<()> {
             updated_at: article.updated_at.to_rfc3339(),
         };
 
-        // let created = surreal_db
-        //     .create(("articles", &surreal_article.id))
-        //     .content(surreal_article)
-        //     .await?;
+        let created: Option<surrealdb::Record> = surreal_db
+            .create(("articles", &surreal_article.id))
+            .content(surreal_article)
+            .await?;
 
-        // match surreal_db
-        //     .create::<surrealdb::Article>(("articles", &surreal_article.id))
-        //     .content(surreal_article)
-        //     .await
-        // {
-        //     Ok(_) => info!("Migrated article {}", article.id),
-        //     Err(e) => error!("Failed to migrate article {}: {}", article.id, e),
-        // }
+        info!("Migrated article {}, created: {:?}", article.id, created);
     }
 
     // Migrate vector embeddings and processed articles

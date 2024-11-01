@@ -1,0 +1,5 @@
+#V2
+SELECT * FROM articles;
+INFO FOR TABLE articles;
+DEFINE TABLE articles PERMISSIONS FULL;
+exit

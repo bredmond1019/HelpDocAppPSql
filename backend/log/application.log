@@ -1,0 +1,30 @@
+2024-11-01 15:37:27 - INFO - Logger initialized successfully
+2024-11-01 15:37:27 - INFO - Starting application
+2024-11-01 15:37:27 - INFO - Starting migration from PostgreSQL to SurrealDB
+2024-11-01 15:37:27 - INFO - Migration completed successfully
+2024-11-01 15:37:27 - INFO - Server listening on 127.0.0.1:3000
+2024-11-01 15:37:27 - INFO - starting 10 workers
+2024-11-01 15:37:27 - INFO - Actix runtime found; starting in Actix runtime
+2024-11-01 15:37:27 - INFO - starting service: "actix-web-service-127.0.0.1:3000", workers: 10, listening on: 127.0.0.1:3000
+2024-11-01 15:37:27 - INFO - SIGTERM received; starting graceful shutdown
+2024-11-01 15:37:27 - INFO - accept thread stopped
+2024-11-01 15:37:29 - INFO - Logger initialized successfully
+2024-11-01 15:37:29 - INFO - Starting application
+2024-11-01 15:37:29 - INFO - Starting migration from PostgreSQL to SurrealDB
+2024-11-01 15:37:29 - INFO - Migration completed successfully
+2024-11-01 15:37:29 - INFO - Server listening on 127.0.0.1:3000
+2024-11-01 15:37:29 - INFO - starting 10 workers
+2024-11-01 15:37:29 - INFO - Actix runtime found; starting in Actix runtime
+2024-11-01 15:37:29 - INFO - starting service: "actix-web-service-127.0.0.1:3000", workers: 10, listening on: 127.0.0.1:3000
+2024-11-01 15:46:44 - INFO - SIGINT received; starting forced shutdown
+2024-11-01 15:46:44 - INFO - accept thread stopped
+2024-11-01 15:46:44 - INFO - shutting down idle worker
+2024-11-01 15:46:44 - INFO - shutting down idle worker
+2024-11-01 15:46:44 - INFO - shutting down idle worker
+2024-11-01 15:46:44 - INFO - shutting down idle worker
+2024-11-01 15:46:44 - INFO - shutting down idle worker
+2024-11-01 15:46:44 - INFO - shutting down idle worker
+2024-11-01 15:46:44 - INFO - shutting down idle worker
+2024-11-01 15:46:44 - INFO - shutting down idle worker
+2024-11-01 15:46:44 - INFO - shutting down idle worker
+2024-11-01 15:46:44 - INFO - shutting down idle worker
