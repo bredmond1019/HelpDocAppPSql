@@ -12,6 +12,8 @@ use db::DbPool;
 
 pub mod db;
 pub mod routes;
+pub mod scripts;
+pub mod services;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

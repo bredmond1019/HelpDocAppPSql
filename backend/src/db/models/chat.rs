@@ -1,3 +1,8 @@
+use chrono::{DateTime, Utc};
+use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
+
 #[derive(Debug, Serialize, Deserialize, Queryable)]
 pub struct ChatSession {
     pub id: Uuid,

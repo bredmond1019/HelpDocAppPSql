@@ -4,6 +4,8 @@ use pgvector::Vector;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::db::schema::articles;
+
 #[derive(Debug, Serialize, Deserialize, Queryable)]
 pub struct Article {
     pub id: Uuid,
@@ -33,4 +35,10 @@ pub struct ArticleChunk {
     pub content: String,
     pub is_title: bool,
     pub embedding_id: Option<Uuid>,
+}
+
+impl Article {
+    pub fn load_all(conn: &mut PgConnection) -> Result<Vec<Article>, diesel::result::Error> {
+        articles::table.load::<Article>(conn)
+    }
 }
