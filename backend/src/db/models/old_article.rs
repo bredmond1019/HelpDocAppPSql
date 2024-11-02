@@ -9,6 +9,8 @@ use uuid::Uuid;
 use crate::db::models::old_collection::OldCollection;
 use crate::schema::old_articles;
 
+use super::Article;
+
 #[derive(Debug, Clone, Serialize, Deserialize, Queryable, Selectable, Insertable, Associations)]
 #[diesel(table_name = crate::schema::old_articles)]
 #[diesel(belongs_to(OldCollection, foreign_key = collection_id))]
@@ -46,6 +48,14 @@ pub struct OldArticleChunk {
 impl OldArticle {
     pub fn load_all(conn: &mut PgConnection) -> Result<Vec<OldArticle>, diesel::result::Error> {
         old_articles::table.load::<OldArticle>(conn)
+    }
+
+    pub fn convert_to_new(self) -> Option<Article> {
+        if self.markdown_content.is_some() {
+            Some(Article::convert_from_old(self))
+        } else {
+            None
+        }
     }
 }
 
