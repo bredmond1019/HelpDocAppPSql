@@ -63,12 +63,3 @@ pub struct NewArticleSearchMetadata {
     pub bullet_points: Vec<String>,
     pub keywords: Vec<String>,
 }
-
-#[derive(Insertable)]
-#[diesel(table_name = crate::schema::article_embeddings)]
-pub struct NewArticleEmbedding {
-    pub id: Uuid,
-    pub metadata_id: Uuid,
-    pub embedding_type: EmbeddingType,
-    pub embedding: Vector,
-}

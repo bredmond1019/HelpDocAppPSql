@@ -6,7 +6,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE EXTENSION IF NOT EXISTS uuid-ossp;
 
-CREATE TABLE collections (
+CREATE TABLE old_collections (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -22,9 +22,9 @@ CREATE TABLE collections (
     keywords_embedding vector(384)
 );
 
-CREATE TABLE articles (
+CREATE TABLE old_articles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    collection_id UUID NOT NULL REFERENCES collections(id),
+    collection_id UUID NOT NULL REFERENCES old_collections(id),
     title VARCHAR(255) NOT NULL,
     slug VARCHAR(255) NOT NULL,
     html_content TEXT,
@@ -43,34 +43,36 @@ CREATE TABLE articles (
     keywords_embedding vector(384)
 );
 
-CREATE TABLE article_chunks (
+CREATE TABLE old_article_chunks (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    article_id UUID NOT NULL REFERENCES articles(id),
+    article_id UUID NOT NULL REFERENCES old_articles(id),
     content TEXT NOT NULL,
     is_title BOOLEAN NOT NULL,
     embedding_id UUID
 );
 
-CREATE TABLE embeddings (
+CREATE TABLE old_embeddings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    article_id UUID NOT NULL REFERENCES articles(id),
+    article_id UUID NOT NULL REFERENCES old_articles(id),
     embedding_vector vector(384) NOT NULL
 );
 
--- Add indexes for performance
-CREATE INDEX idx_collections_slug ON collections(slug);
-CREATE INDEX idx_articles_slug ON articles(slug);
-CREATE INDEX idx_articles_collection_id ON articles(collection_id);
-CREATE INDEX idx_article_chunks_article_id ON article_chunks(article_id);
-CREATE INDEX idx_embeddings_article_id ON embeddings(article_id);
+-- Add indexes for performance (with old_ prefix)
+CREATE INDEX idx_old_collections_slug ON old_collections(slug);
+CREATE INDEX idx_old_articles_slug ON old_articles(slug);
+CREATE INDEX idx_old_articles_collection_id ON old_articles(collection_id);
+CREATE INDEX idx_old_article_chunks_article_id ON old_article_chunks(article_id);
+CREATE INDEX idx_old_embeddings_article_id ON old_embeddings(article_id);
 
--- Add vector indexes for similarity search
-CREATE INDEX ON articles USING ivfflat (paragraph_description_embedding vector_cosine_ops);
-CREATE INDEX ON articles USING ivfflat (bullet_points_embedding vector_cosine_ops);
-CREATE INDEX ON articles USING ivfflat (keywords_embedding vector_cosine_ops);
-CREATE INDEX ON embeddings USING ivfflat (embedding_vector vector_cosine_ops);
-
-
+-- Add vector indexes for similarity search (with old_ prefix)
+CREATE INDEX idx_old_articles_paragraph_description_embedding 
+    ON old_articles USING ivfflat (paragraph_description_embedding vector_cosine_ops);
+CREATE INDEX idx_old_articles_bullet_points_embedding 
+    ON old_articles USING ivfflat (bullet_points_embedding vector_cosine_ops);
+CREATE INDEX idx_old_articles_keywords_embedding 
+    ON old_articles USING ivfflat (keywords_embedding vector_cosine_ops);
+CREATE INDEX idx_old_embeddings_embedding_vector 
+    ON old_embeddings USING ivfflat (embedding_vector vector_cosine_ops);
 
 -- Sets up a trigger for the given table to automatically set a column called
 -- `updated_at` whenever the row is modified (unless `updated_at` was included

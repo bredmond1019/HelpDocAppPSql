@@ -4,6 +4,21 @@ diesel::table! {
     use diesel::sql_types::*;
     use pgvector::sql_types::*;
 
+    content_versions (id) {
+        id -> Uuid,
+        article_id -> Nullable<Uuid>,
+        version_number -> Int4,
+        markdown_content -> Nullable<Text>,
+        #[max_length = 255]
+        edited_by -> Nullable<Varchar>,
+        created_at -> Timestamptz,
+    }
+}
+
+diesel::table! {
+    use diesel::sql_types::*;
+    use pgvector::sql_types::*;
+
     old_article_chunks (id) {
         id -> Uuid,
         article_id -> Uuid,
@@ -71,21 +86,6 @@ diesel::table! {
     use diesel::sql_types::*;
     use pgvector::sql_types::*;
 
-    content_versions (id) {
-        id -> Uuid,
-        article_id -> Nullable<Uuid>,
-        version_number -> Int4,
-        markdown_content -> Nullable<Text>,
-        #[max_length = 255]
-        edited_by -> Nullable<Varchar>,
-        created_at -> Timestamptz,
-    }
-}
-
-diesel::table! {
-    use diesel::sql_types::*;
-    use pgvector::sql_types::*;
-
     old_embeddings (id) {
         id -> Uuid,
         article_id -> Uuid,
@@ -93,15 +93,15 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(content_versions -> old_articles (article_id));
 diesel::joinable!(old_article_chunks -> old_articles (article_id));
 diesel::joinable!(old_articles -> old_collections (collection_id));
-diesel::joinable!(content_versions -> old_articles (article_id));
 diesel::joinable!(old_embeddings -> old_articles (article_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    content_versions,
     old_article_chunks,
     old_articles,
     old_collections,
-    content_versions,
     old_embeddings,
 );

@@ -2,10 +2,10 @@
 -- and other internal bookkeeping. This file is safe to edit, any future
 -- changes will be added to existing projects as new migrations.
 
-DROP TABLE IF EXISTS embeddings;
-DROP TABLE IF EXISTS article_chunks;
-DROP TABLE IF EXISTS articles;
-DROP TABLE IF EXISTS collections;
+DROP TABLE IF EXISTS old_embeddings;
+DROP TABLE IF EXISTS old_article_chunks;
+DROP TABLE IF EXISTS old_articles;
+DROP TABLE IF EXISTS old_collections;
 
 DROP EXTENSION IF EXISTS vector;
 DROP EXTENSION IF EXISTS pg_trgm;

@@ -1,0 +1,31 @@
+-- Your SQL goes here
+ALTER INDEX idx_collections_slug RENAME TO idx_old_collections_slug;
+ALTER INDEX idx_articles_slug RENAME TO idx_old_articles_slug;
+ALTER INDEX idx_articles_collection_id RENAME TO idx_old_articles_collection_id;
+-- ALTER INDEX idx_article_chunks_article_id RENAME TO idx_old_article_chunks_article_id;
+ALTER INDEX idx_embeddings_article_id RENAME TO idx_old_embeddings_article_id;
+
+-- Primary keys
+ALTER INDEX article_chunks_pkey RENAME TO idx_old_article_chunks_pkey;
+ALTER INDEX articles_pkey RENAME TO idx_old_articles_pkey;
+ALTER INDEX collections_pkey RENAME TO idx_old_collections_pkey;
+ALTER INDEX embeddings_pkey RENAME TO idx_old_embeddings_pkey;
+
+-- Collections indexes
+ALTER INDEX collections_slug_key RENAME TO idx_old_collections_slug_key;
+ALTER INDEX idx_collections_helpscout_id RENAME TO idx_old_collections_helpscout_id;
+ALTER INDEX idx_collections_bullet_points_embedding RENAME TO idx_old_collections_bullet_points_embedding;
+ALTER INDEX idx_collections_keywords_embedding RENAME TO idx_old_collections_keywords_embedding;
+ALTER INDEX idx_collections_paragraph_description_embedding RENAME TO idx_old_collections_paragraph_description_embedding;
+
+-- Articles indexes
+ALTER INDEX idx_articles_bullet_points_embedding RENAME TO idx_old_articles_bullet_points_embedding;
+ALTER INDEX idx_articles_content RENAME TO idx_old_articles_content;
+ALTER INDEX idx_articles_helpscout_id RENAME TO idx_old_articles_helpscout_id;
+ALTER INDEX idx_articles_keywords_embedding RENAME TO idx_old_articles_keywords_embedding;
+ALTER INDEX idx_articles_paragraph_description_embedding RENAME TO idx_old_articles_paragraph_description_embedding;
+ALTER INDEX idx_articles_title RENAME TO idx_old_articles_title;
+
+-- Embeddings index
+ALTER INDEX embeddings_embedding_vector_idx RENAME TO idx_old_embeddings_embedding_vector_idx;
+
