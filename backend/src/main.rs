@@ -34,6 +34,8 @@ async fn main() -> std::io::Result<()> {
     let pool: DbPool = db::init_pool();
     let arc_pool = Arc::new(pool.clone());
 
+    scripts::migration::migrate().unwrap();
+
     // Start the server
     info!("Server listening on 127.0.0.1:3000");
     HttpServer::new(move || {

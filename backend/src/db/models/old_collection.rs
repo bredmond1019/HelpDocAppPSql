@@ -6,6 +6,8 @@ use uuid::Uuid;
 
 use crate::schema::old_collections;
 
+use super::Collection;
+
 #[derive(Debug, Clone, Serialize, Deserialize, Queryable, Selectable, Insertable, Identifiable)]
 #[diesel(table_name = old_collections)]
 pub struct OldCollection {
@@ -29,5 +31,9 @@ impl OldCollection {
     pub fn load_all(conn: &mut PgConnection) -> Result<Vec<OldCollection>, diesel::result::Error> {
         use crate::schema::old_collections::table;
         table.load::<OldCollection>(conn)
+    }
+
+    pub fn convert_to_new(self) -> Collection {
+        Collection::convert_from_old(self)
     }
 }

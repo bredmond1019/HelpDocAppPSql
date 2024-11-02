@@ -73,6 +73,10 @@ impl Article {
         articles::table.load::<Article>(conn)
     }
 
+    pub fn find(id: Uuid, conn: &mut PgConnection) -> Result<Self, diesel::result::Error> {
+        articles::table.find(id).get_result(conn)
+    }
+
     pub fn convert_from_old(old_article: OldArticle) -> Self {
         Self {
             id: old_article.id,
