@@ -1,16 +1,12 @@
-use chrono::{DateTime, TimeZone, Utc};
-use diesel::associations::HasTable;
+use chrono::{DateTime, Utc};
 use diesel::prelude::*;
-use diesel::BelongingToDsl;
 use pgvector::Vector;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::db::models::collection::Collection;
-use crate::db::surrealdb;
-use crate::schema::articles;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Queryable, Selectable, Insertable, Associations)]
+#[derive(Clone, Serialize, Deserialize, Queryable, Selectable, Identifiable, Associations)]
 #[diesel(table_name = crate::schema::articles)]
 #[diesel(belongs_to(Collection, foreign_key = collection_id))]
 pub struct Article {
@@ -18,52 +14,61 @@ pub struct Article {
     pub collection_id: Uuid,
     pub title: String,
     pub slug: String,
-    pub html_content: Option<String>,
-    pub markdown_content: Option<String>,
-    pub version: i32,
-    pub last_edited_by: Option<String>,
-    pub helpscout_collection_id: String,
+    pub content: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
-    pub helpscout_article_id: Option<String>,
-    // Meta Data
-    pub paragraph_description: Option<String>,
-    pub bullet_points: Option<Vec<Option<String>>>,
-    pub keywords: Option<Vec<Option<String>>>,
-    pub paragraph_description_embedding: Option<Vector>,
-    pub bullet_points_embedding: Option<Vector>,
-    pub keywords_embedding: Option<Vector>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Queryable)]
+#[derive(Clone, Serialize, Deserialize, Queryable, Selectable, Identifiable, Associations)]
+#[diesel(belongs_to(Article, foreign_key = article_id))]
+#[diesel(table_name = crate::schema::article_search_metadata)]
+pub struct ArticleSearchMetadata {
+    pub id: Uuid,
+    pub article_id: Uuid,
+    pub summary: String,
+    pub bullet_points: Vec<String>,
+    pub keywords: Vec<String>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Queryable, Selectable, Identifiable, Associations)]
+#[diesel(belongs_to(Article, foreign_key = article_id))]
+#[diesel(table_name = crate::schema::article_chunks)]
 pub struct ArticleChunk {
     pub id: Uuid,
     pub article_id: Uuid,
     pub content: String,
     pub is_title: bool,
-    pub embedding_id: Option<Uuid>,
 }
 
-impl Article {
-    pub fn load_all(conn: &mut PgConnection) -> Result<Vec<Article>, diesel::result::Error> {
-        articles::table.load::<Article>(conn)
-    }
+// Insertable structs for creating new records
 
-    pub fn to_surreal_article(&self) -> Result<surrealdb::NewArticle, anyhow::Error> {
-        Ok(surrealdb::NewArticle {
-            id: self.id.to_string(),
-            title: self.title.clone(),
-            content: self.markdown_content.clone().unwrap_or_default(),
-            slug: self.slug.clone(),
-            categories: vec![],
-        })
-    }
+#[derive(Insertable)]
+#[diesel(table_name = crate::schema::articles)]
+pub struct NewArticle {
+    pub id: Uuid,
+    pub collection_id: Uuid,
+    pub title: String,
+    pub slug: String,
+    pub content: String,
 }
 
-impl HasTable for Article {
-    type Table = articles::table;
+#[derive(Insertable)]
+#[diesel(table_name = crate::schema::article_search_metadata)]
+pub struct NewArticleSearchMetadata {
+    pub id: Uuid,
+    pub article_id: Uuid,
+    pub summary: String,
+    pub bullet_points: Vec<String>,
+    pub keywords: Vec<String>,
+}
 
-    fn table() -> Self::Table {
-        articles::table
-    }
+#[derive(Insertable)]
+#[diesel(table_name = crate::schema::article_embeddings)]
+pub struct NewArticleEmbedding {
+    pub id: Uuid,
+    pub metadata_id: Uuid,
+    pub embedding_type: EmbeddingType,
+    pub embedding: Vector,
 }

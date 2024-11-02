@@ -1,14 +1,10 @@
 // File: src/db/mod.rs
-
-use std::env;
-
 use diesel::r2d2::{self, ConnectionManager, Pool};
 use diesel::RunQueryDsl;
 use diesel::{sql_query, PgConnection};
+use std::env;
 
 pub mod models;
-pub mod surrealdb;
-
 pub use self::models::*;
 
 pub type DbPool = Pool<ConnectionManager<PgConnection>>;
